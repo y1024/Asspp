@@ -9,7 +9,7 @@ import ApplePackage
 import SwiftUI
 
 struct ProductHistoryView: View {
-    @StateObject var vm: AppPackageArchive
+    @State var vm: AppPackageArchive
     @State var showErrorAlert = false
     @Environment(\.dismiss) var dismiss
 
@@ -30,7 +30,7 @@ struct ProductHistoryView: View {
                     } label: {
                         HStack {
                             Text(pkg.software.version)
-                                .foregroundColor(.accentColor)
+                                .foregroundStyle(.accent)
                             Spacer()
                         }
                         .contentShape(Rectangle())
@@ -40,7 +40,7 @@ struct ProductHistoryView: View {
                         vm.populateVersionItem(for: key)
                     } label: {
                         HStack {
-                            Text(key).foregroundColor(.secondary)
+                            Text(key).foregroundStyle(.secondary)
                             Spacer()
                         }
                         .contentShape(Rectangle())

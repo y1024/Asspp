@@ -104,16 +104,24 @@ App.main()
 
 #if canImport(AppKit) && !canImport(UIKit)
     import AppKit
-    import Combine
 
     class AppDelegate: NSObject, NSApplicationDelegate {
-        var downloadsObserver: AnyCancellable?
         func applicationDidFinishLaunching(_ notification: Notification) {
-            downloadsObserver = Downloads.this.objectWillChange
-                .sink {
-                    let downloadingTaskCount = Downloads.this.runningTaskCount
-                    NSApp.dockTile.badgeLabel = downloadingTaskCount > 0 ? "\(downloadingTaskCount)" : nil
+            Task { @MainActor in
+                self.observeDownloadCount()
+            }
+        }
+
+        @MainActor
+        private func observeDownloadCount() {
+            withObservationTracking {
+                let count = Downloads.this.runningTaskCount
+                NSApp.dockTile.badgeLabel = count > 0 ? "\(count)" : nil
+            } onChange: {
+                Task { @MainActor in
+                    self.observeDownloadCount()
                 }
+            }
         }
 
         func applicationWillResignActive(_ notification: Notification) {

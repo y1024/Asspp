@@ -14,7 +14,7 @@ import SwiftUI
 #endif
 
 struct PackageView: View {
-    @StateObject var pkg: PackageManifest
+    @State var pkg: PackageManifest
 
     var archive: AppStore.AppPackage {
         pkg.package
@@ -33,8 +33,8 @@ struct PackageView: View {
         @State private var copied = false
     #endif
 
-    @StateObject var vm = AppStore.this
-    @ObservedObject var downloads = Downloads.this
+    @State var vm = AppStore.this
+    @State var downloads = Downloads.this
 
     var body: some View {
         FormOnTahoeList {
@@ -109,7 +109,8 @@ struct PackageView: View {
                                 pasteboard.clearContents()
                                 pasteboard.setString(url.path, forType: .string)
                                 copied = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                Task { @MainActor in
+                                    try? await Task.sleep(for: .seconds(1))
                                     copied = false
                                 }
                             } label: {

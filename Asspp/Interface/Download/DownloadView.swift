@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct DownloadView: View {
-    @StateObject var vm = Downloads.this
+    @State var vm = Downloads.this
 
     var body: some View {
         #if os(iOS)
-            NavigationView {
+            NavigationStack {
                 content
                     .navigationTitle("Downloads")
             }
-            .navigationViewStyle(.stack)
         #else
             NavigationStack {
                 content

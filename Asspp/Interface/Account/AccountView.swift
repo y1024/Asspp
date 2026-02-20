@@ -6,11 +6,10 @@
 //
 
 import ApplePackage
-import Combine
 import SwiftUI
 
 struct AccountView: View {
-    @StateObject private var vm = AppStore.this
+    @State private var vm = AppStore.this
     @State private var addAccount = false
     @State private var selectedID: AppStore.UserAccount.ID?
 
@@ -32,7 +31,7 @@ struct AccountView: View {
             }
             .sheet(isPresented: $addAccount) {
                 AddAccountView()
-                    .frame(idealHeight: 200)
+                    .frame(minWidth: 480, idealWidth: 520, minHeight: 340, idealHeight: 380)
             }
             .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
@@ -100,7 +99,7 @@ struct AccountView: View {
 
     #if !os(macOS)
         private var iOSBody: some View {
-            NavigationView {
+            NavigationStack {
                 List {
                     Section {
                         ForEach(vm.accounts) { account in
@@ -130,7 +129,7 @@ struct AccountView: View {
                 }
             }
             .sheet(isPresented: $addAccount) {
-                NavigationView {
+                NavigationStack {
                     AddAccountView()
                 }
             }

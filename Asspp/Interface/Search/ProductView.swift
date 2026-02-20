@@ -10,18 +10,18 @@ import Kingfisher
 import SwiftUI
 
 struct ProductView: View {
-    @StateObject var archive: AppPackageArchive
+    @State var archive: AppPackageArchive
 
     var region: String {
         archive.region
     }
 
     init(archive: AppStore.AppPackage, region: String) {
-        _archive = .init(wrappedValue: AppPackageArchive(accountID: nil, region: region, package: archive))
+        _archive = State(initialValue: AppPackageArchive(accountID: nil, region: region, package: archive))
     }
 
-    @StateObject var vm = AppStore.this
-    @StateObject var dvm = Downloads.this
+    @State var vm = AppStore.this
+    @State var dvm = Downloads.this
 
     var eligibleAccounts: [AppStore.UserAccount] {
         vm.eligibleAccounts(for: region)
@@ -189,7 +189,7 @@ struct ProductView: View {
         } footer: {
             if let hint {
                 Text(hint.message)
-                    .foregroundColor(hint.color)
+                    .foregroundStyle(hint.color ?? .primary)
             } else {
                 Text("Package can be installed later in download page.")
             }
@@ -208,15 +208,11 @@ struct ProductView: View {
                     showDownloadPage = true
                 }
             } catch ApplePackageError.licenseRequired where archive.package.software.price == 0 && !acquiringLicense {
-                DispatchQueue.main.async {
-                    obtainDownloadURL = false
-                    showLicenseAlert = true
-                }
+                obtainDownloadURL = false
+                showLicenseAlert = true
             } catch {
-                DispatchQueue.main.async {
-                    obtainDownloadURL = false
-                    hint = Hint(message: String(localized: "Unable to retrieve download url, please try again later.") + "\n" + error.localizedDescription, color: .red)
-                }
+                obtainDownloadURL = false
+                hint = Hint(message: String(localized: "Unable to retrieve download url, please try again later.") + "\n" + error.localizedDescription, color: .red)
             }
         }
     }
@@ -233,15 +229,11 @@ struct ProductView: View {
                         app: archive.package.software
                     )
                 }
-                DispatchQueue.main.async {
-                    acquiringLicense = false
-                    licenseHint = String(localized: "Request Successes")
-                }
+                acquiringLicense = false
+                licenseHint = String(localized: "Request Successes")
             } catch {
-                DispatchQueue.main.async {
-                    acquiringLicense = false
-                    licenseHint = error.localizedDescription
-                }
+                acquiringLicense = false
+                licenseHint = error.localizedDescription
             }
         }
     }

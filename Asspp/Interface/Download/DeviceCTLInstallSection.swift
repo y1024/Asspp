@@ -57,7 +57,7 @@
 
                     if let hint = dm.hint {
                         Text(hint.message)
-                            .foregroundColor(hint.color)
+                            .foregroundStyle(hint.color ?? .primary)
                     }
                 }
             }

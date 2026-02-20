@@ -10,6 +10,7 @@
 		50184B892E7860D500402B74 /* Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 50184B882E7860D500402B74 /* Dynamic */; };
 		507974632E784D4E0016F540 /* Digger in Frameworks */ = {isa = PBXBuildFile; productRef = 507974622E784D4E0016F540 /* Digger */; };
 		50ABFB122F48A6D60077DE1A /* ApplePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 50ABFB112F48A6D60077DE1A /* ApplePackage */; };
+		50ABFE1F2F48AAE50077DE1A /* ButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 50ABFE1E2F48AAE50077DE1A /* ButtonKit */; };
 		50D0C8B82C40187800538F49 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 50D0C8B72C40187800538F49 /* Vapor */; };
 		50D262942E77D63B00FF8813 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 50D262932E77D63B00FF8813 /* Logging */; };
 		50D44D192C3F92A100CF6A69 /* ApplePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 50D44D182C3F92A100CF6A69 /* ApplePackage */; };
@@ -63,6 +64,7 @@
 				50D262942E77D63B00FF8813 /* Logging in Frameworks */,
 				50184B892E7860D500402B74 /* Dynamic in Frameworks */,
 				50ABFB122F48A6D60077DE1A /* ApplePackage in Frameworks */,
+				50ABFE1F2F48AAE50077DE1A /* ButtonKit in Frameworks */,
 				50D44D512C3FC85F00CF6A69 /* AnyCodable in Frameworks */,
 				50D44D192C3F92A100CF6A69 /* ApplePackage in Frameworks */,
 				80CD64ED2C42AA2C0073E206 /* KeychainAccess in Frameworks */,
@@ -135,6 +137,7 @@
 				507974622E784D4E0016F540 /* Digger */,
 				50184B882E7860D500402B74 /* Dynamic */,
 				50ABFB112F48A6D60077DE1A /* ApplePackage */,
+				50ABFE1E2F48AAE50077DE1A /* ButtonKit */,
 			);
 			productName = Asspp;
 			productReference = 50D44D022C3F91F700CF6A69 /* Asspp.app */;
@@ -177,6 +180,7 @@
 				507974612E784D4E0016F540 /* XCRemoteSwiftPackageReference "Digger" */,
 				50184B872E7860D500402B74 /* XCRemoteSwiftPackageReference "Dynamic" */,
 				50ABFB102F48A6D60077DE1A /* XCRemoteSwiftPackageReference "ApplePackage" */,
+				50ABFE1D2F48AAE50077DE1A /* XCRemoteSwiftPackageReference "ButtonKit" */,
 			);
 			productRefGroup = 50D44D032C3F91F700CF6A69 /* Products */;
 			projectDirPath = "";
@@ -400,6 +404,14 @@
 				minimumVersion = 1.2.1;
 			};
 		};
+		50ABFE1D2F48AAE50077DE1A /* XCRemoteSwiftPackageReference "ButtonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dean151/ButtonKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.0;
+			};
+		};
 		50D0C8B62C40187800538F49 /* XCRemoteSwiftPackageReference "vapor" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vapor/vapor";
@@ -453,7 +465,7 @@
 			repositoryURL = "https://github.com/Lakr233/ColorfulX";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.0;
+				minimumVersion = 6.0.2;
 			};
 		};
 		80CD64EB2C42AA2C0073E206 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
@@ -481,6 +493,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50ABFB102F48A6D60077DE1A /* XCRemoteSwiftPackageReference "ApplePackage" */;
 			productName = ApplePackage;
+		};
+		50ABFE1E2F48AAE50077DE1A /* ButtonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50ABFE1D2F48AAE50077DE1A /* XCRemoteSwiftPackageReference "ButtonKit" */;
+			productName = ButtonKit;
 		};
 		50D0C8B72C40187800538F49 /* Vapor */ = {
 			isa = XCSwiftPackageProductDependency;

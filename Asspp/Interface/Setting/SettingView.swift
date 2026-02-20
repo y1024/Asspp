@@ -13,14 +13,13 @@ import SwiftUI
 #endif
 
 struct SettingView: View {
-    @StateObject var vm = AppStore.this
+    @State var vm = AppStore.this
 
     var body: some View {
         #if os(iOS)
-            NavigationView {
+            NavigationStack {
                 formContent
             }
-            .navigationViewStyle(.stack)
         #else
             NavigationStack {
                 formContent
@@ -142,7 +141,8 @@ struct SettingView: View {
                     #if canImport(AppKit) && !canImport(UIKit)
                         NSApp.terminate(nil)
                     #endif
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .seconds(1))
                         exit(0)
                     }
                 }

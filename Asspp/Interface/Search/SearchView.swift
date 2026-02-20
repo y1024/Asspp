@@ -26,7 +26,7 @@ struct SearchView: View {
         @State var searchResult: [AppStore.AppPackage] = []
     #endif
 
-    @StateObject var vm = AppStore.this
+    @State var vm = AppStore.this
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     var possibleRegion: Set<String> {
         vm.possibleRegions
@@ -34,18 +34,10 @@ struct SearchView: View {
 
     var body: some View {
         #if os(iOS)
-            if #available(iOS 16, *) {
-                // Temporary workaround for the auto-pop issue on iOS 16 when using NavigationView
-                // reference: https://stackoverflow.com/questions/66559814/swiftui-navigationlink-pops-out-by-itself#comment136786758_77588007
-                NavigationStack {
-                    if #available(iOS 26.0, *) {
-                        modernContent
-                    } else {
-                        legacyContent
-                    }
-                }
-            } else {
-                NavigationView {
+            NavigationStack {
+                if #available(iOS 26.0, *) {
+                    modernContent
+                } else {
                     legacyContent
                 }
             }
@@ -64,7 +56,7 @@ struct SearchView: View {
         } label: {
             Label("Type", systemImage: searchType.iconName)
         }
-        .onChangeCompact(of: searchType) { _ in
+        .onChange(of: searchType) { _, _ in
             searchResult = []
         }
     }
@@ -108,7 +100,7 @@ struct SearchView: View {
                 }
             }
         }
-        .onChangeCompact(of: searchRegion) { _ in
+        .onChange(of: searchRegion) { _, _ in
             searchResult = []
         }
     }

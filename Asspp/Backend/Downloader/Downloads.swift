@@ -7,49 +7,42 @@
 
 import AnyCodable
 import ApplePackage
-import Combine
 @preconcurrency import Digger
 import Foundation
 import Logging
 
+@Observable
 @MainActor
-class Downloads: NSObject, ObservableObject {
+class Downloads {
     static let this = Downloads()
 
-    @PublishedPersist(key: "DownloadRequests", defaultValue: [])
-    var manifests: [PackageManifest] {
-        didSet { updateSaver() }
-    }
+    @ObservationIgnored
+    private var _manifests = Persist<[PackageManifest]>(key: "DownloadRequests", defaultValue: [])
 
-    private var manifestSaver: Set<AnyCancellable> = []
+    var manifests: [PackageManifest] {
+        get {
+            access(keyPath: \.manifests)
+            return _manifests.wrappedValue
+        }
+        set {
+            withMutation(keyPath: \.manifests) {
+                _manifests.wrappedValue = newValue
+            }
+        }
+    }
 
     var runningTaskCount: Int {
         manifests.count(where: { $0.state.status == .downloading })
     }
 
-    override init() {
-        super.init()
+    init() {
         for idx in manifests.indices {
             manifests[idx].state.resetIfNotCompleted()
         }
-        updateSaver()
     }
 
-    private func updateSaver() {
-        manifestSaver.forEach { $0.cancel() }
-        manifestSaver.removeAll()
-        manifestSaver = Set(manifests.map { manifest in
-            manifest.objectWillChange.sink { [weak self] in
-                self?.objectWillChange.send()
-            }
-        })
-        objectWillChange
-            .receive(on: DispatchQueue.global())
-            .sink { [weak self] in
-                guard let self else { return }
-                _manifests.save()
-            }
-            .store(in: &manifestSaver)
+    func saveManifests() {
+        _manifests.save()
     }
 
     func downloadRequest(forArchive archive: AppStore.AppPackage) -> PackageManifest? {
@@ -74,22 +67,24 @@ class Downloads: NSObject, ObservableObject {
         request.state.start()
         DiggerManager.shared.download(with: request.url)
             .speed { speedBytes in
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     let fmt = ByteCountFormatter()
                     fmt.allowedUnits = .useAll
                     fmt.countStyle = .file
                     request.state.status = .downloading
                     request.state.speed = fmt.string(fromByteCount: Int64(speedBytes))
+                    self.saveManifests()
                 }
             }
             .progress { progress in
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     request.state.status = .downloading
                     request.state.percent = progress.fractionCompleted
+                    self.saveManifests()
                 }
             }
             .completion { completion in
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     switch completion {
                     case let .success(url):
                         Task.detached {
@@ -97,10 +92,12 @@ class Downloads: NSObject, ObservableObject {
                                 try await self.finalize(manifest: request, preparedContentAt: url)
                                 await MainActor.run {
                                     request.state.complete()
+                                    self.saveManifests()
                                 }
                             } catch {
                                 await MainActor.run {
                                     request.state.error = error.localizedDescription
+                                    self.saveManifests()
                                 }
                             }
                         }
@@ -109,6 +106,7 @@ class Downloads: NSObject, ObservableObject {
                             // not an error at all
                         } else {
                             request.state.error = error.localizedDescription
+                            self.saveManifests()
                         }
                     }
                 }

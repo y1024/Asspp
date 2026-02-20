@@ -18,7 +18,7 @@ import SwiftUI
 struct AccountDetailView: View {
     let accountId: AppStore.UserAccount.ID
 
-    @StateObject var vm = AppStore.this
+    @State var vm = AppStore.this
     @Environment(\.dismiss) var dismiss
 
     private var account: AppStore.UserAccount? {
@@ -93,12 +93,12 @@ struct AccountDetailView: View {
         Task {
             do {
                 try await vm.rotate(id: account?.id ?? "")
-                DispatchQueue.main.async {
+                await MainActor.run {
                     rotating = false
                     rotatingHint = String(localized: "Success")
                 }
             } catch {
-                DispatchQueue.main.async {
+                await MainActor.run {
                     rotating = false
                     rotatingHint = error.localizedDescription
                 }

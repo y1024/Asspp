@@ -15,24 +15,19 @@ private let packagesDir = {
     return ret
 }()
 
-class PackageManifest: ObservableObject, Identifiable, Codable, Hashable, Equatable {
-    private(set) var id: UUID = .init()
+@Observable
+class PackageManifest: Identifiable, Codable, Hashable, Equatable {
+    @ObservationIgnored private(set) var id: UUID = .init()
 
-    private(set) var account: AppStore.UserAccount
-    private(set) var package: AppStore.AppPackage
+    @ObservationIgnored private(set) var account: AppStore.UserAccount
+    @ObservationIgnored private(set) var package: AppStore.AppPackage
 
-    private(set) var url: URL
-    private(set) var signatures: [ApplePackage.Sinf]
+    @ObservationIgnored private(set) var url: URL
+    @ObservationIgnored private(set) var signatures: [ApplePackage.Sinf]
 
-    private(set) var creation: Date
+    @ObservationIgnored private(set) var creation: Date
 
-    var state: PackageState = .init() {
-        didSet {
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
-            }
-        }
-    }
+    var state: PackageState = .init()
 
     var targetLocation: URL {
         packagesDir

@@ -11,11 +11,7 @@ extension View {
     @ViewBuilder
     func mediumAndLargeDetents() -> some View {
         #if os(iOS)
-            if #available(iOS 16.0, *) {
-                presentationDetents([.medium, .large])
-            } else {
-                self
-            }
+            presentationDetents([.medium, .large])
         #else
             self
         #endif
@@ -58,21 +54,6 @@ extension View {
         #else
             self
         #endif
-    }
-
-    @ViewBuilder
-    func onChangeCompact<Value: Equatable>(
-        of value: Value,
-        initial: Bool = false,
-        perform action: @escaping (Value) -> Void
-    ) -> some View {
-        if #available(iOS 18.0, macOS 15.0, *) {
-            onChange(of: value, initial: initial) { _, newValue in
-                action(newValue)
-            }
-        } else {
-            onChange(of: value, perform: action)
-        }
     }
 
     @ViewBuilder

@@ -12,7 +12,7 @@ struct ProductVersionView: View {
     let accountIdentifier: String
     let package: AppStore.AppPackage
 
-    @StateObject var dvm = Downloads.this
+    @State var dvm = Downloads.this
     @State var obtainDownloadURL: Bool = false
     @State var hint: Hint?
 
@@ -42,7 +42,7 @@ struct ProductVersionView: View {
 
                     if let hint {
                         Text(hint.message)
-                            .foregroundColor(hint.color)
+                            .foregroundStyle(hint.color ?? .primary)
                     }
                 }
             }
@@ -61,10 +61,8 @@ struct ProductVersionView: View {
                     hint = Hint(message: String(localized: "Download Requested"), color: nil)
                 }
             } catch {
-                DispatchQueue.main.async {
-                    obtainDownloadURL = false
-                    hint = Hint(message: String(localized: "Unable to retrieve download url, please try again later.") + "\n" + error.localizedDescription, color: .red)
-                }
+                obtainDownloadURL = false
+                hint = Hint(message: String(localized: "Unable to retrieve download url, please try again later.") + "\n" + error.localizedDescription, color: .red)
             }
         }
     }
