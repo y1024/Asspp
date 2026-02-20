@@ -18,7 +18,7 @@ struct LogView: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             if unlocked {
                 List {
                     ForEach(Array(messages.enumerated()), id: \.offset) { _, line in
@@ -28,6 +28,7 @@ struct LogView: View {
                             .textSelection(.enabled)
                     }
                 }
+                .transition(.opacity)
                 .formStyle(.grouped)
                 .listStyle(.plain)
                 .toolbar {
@@ -61,9 +62,9 @@ struct LogView: View {
                     .tint(.red)
                     Spacer()
                 }
+                .transition(.opacity)
             }
         }
-        .transition(.opacity)
         .animation(.spring, value: unlocked)
         .navigationTitle("Logs")
     }
