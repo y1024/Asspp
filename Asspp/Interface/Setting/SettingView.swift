@@ -50,6 +50,7 @@ struct SettingView: View {
                     .redacted(reason: .placeholder, isEnabled: vm.demoMode)
                 Text(ApplePackage.Configuration.deviceIdentifier)
                     .font(.system(.body, design: .monospaced))
+                    .textSelection(.enabled)
                     .redacted(reason: .placeholder, isEnabled: vm.demoMode)
                 #if canImport(UIKit)
                     Button("Open Settings") {
