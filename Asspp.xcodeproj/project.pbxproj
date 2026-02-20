@@ -79,9 +79,9 @@
 		50D44CF92C3F91F700CF6A69 = {
 			isa = PBXGroup;
 			children = (
-				50DCBBB42F346C57007100D2 /* Configuration */,
-				50DCBD772F346DFE007100D2 /* Certificates */,
 				50DCBBF92F346C6F007100D2 /* Asspp */,
+				50DCBD772F346DFE007100D2 /* Certificates */,
+				50DCBBB42F346C57007100D2 /* Configuration */,
 				50D44D032C3F91F700CF6A69 /* Products */,
 				50D44D172C3F92A100CF6A69 /* Frameworks */,
 			);

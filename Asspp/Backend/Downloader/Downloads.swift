@@ -58,8 +58,9 @@ class Downloads {
 
     func suspend(request: PackageManifest) {
         logger.info("suspending download request id: \(request.id)")
-        DiggerManager.shared.cancelTask(for: request.url)
+        DiggerManager.shared.stopTask(for: request.url)
         request.state.resetIfNotCompleted()
+        saveManifests()
     }
 
     func resume(request: PackageManifest) {
@@ -102,8 +103,11 @@ class Downloads {
                             }
                         }
                     case let .failure(error):
-                        if error is CancellationError {
-                            // not an error at all
+                        let nsError = error as NSError
+                        if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
+                            // User-initiated cancellation via cancelTask(), not an error
+                        } else if error is CancellationError {
+                            // Swift structured concurrency cancellation
                         } else {
                             request.state.error = error.localizedDescription
                             self.saveManifests()
@@ -111,6 +115,8 @@ class Downloads {
                     }
                 }
             }
+        DiggerManager.shared.startTask(for: request.url)
+        saveManifests()
     }
 
     private func finalize(manifest: PackageManifest, preparedContentAt downloadedFile: URL) async throws {
@@ -138,16 +144,16 @@ class Downloads {
 
     func delete(request: PackageManifest) {
         logger.info("deleting download request id: \(request.id)")
-        suspend(request: request)
+        DiggerManager.shared.cancelTask(for: request.url)
         request.delete()
         manifests.removeAll(where: { $0.id == request.id })
     }
 
     func restart(request: PackageManifest) {
         logger.info("restarting download request id: \(request.id)")
-        suspend(request: request)
+        DiggerManager.shared.cancelTask(for: request.url)
         request.delete()
-        request.state.resetIfNotCompleted()
+        request.state = .init()
         resume(request: request)
     }
 
